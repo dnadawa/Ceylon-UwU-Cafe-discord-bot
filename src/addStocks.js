@@ -1,0 +1,70 @@
+const { EmbedBuilder } = require("discord.js");
+
+module.exports = async function addStocks(interaction) {
+  const { options, member, channelId } = interaction;
+  const allowedChannels = ["1129728839149436974", "1129735070299721728"];
+
+  if (!allowedChannels.includes(channelId)) {
+    return interaction.reply({
+      content: `Sorry, this command can only be used in <#${"1129735070299721728"}> channel.`,
+      ephemeral: true,
+    });
+  }
+
+  const bubbleTeaCount = options.getNumber("bubble-tea");
+  const coffeeCount = options.getNumber("coffee");
+  const latteCount = options.getNumber("latte");
+  const cupcakeCount = options.getNumber("cupcake");
+  const iceCreamSandwichCount = options.getNumber("ice-cream-sandwich");
+  const chickenPastelCount = options.getNumber("chicken-pastel");
+  const nutellaPancakeCount = options.getNumber("nutella-pancake");
+  const nutellaWaffelCount = options.getNumber("nutella-waffel");
+  const oreoPancakeCount = options.getNumber("oreo-pancake");
+  const itemList = {
+    "Bubble Tea": bubbleTeaCount,
+    Coffee: coffeeCount,
+    Latte: latteCount,
+    Cupcake: cupcakeCount,
+    "Ice-cream Sandwich": iceCreamSandwichCount,
+    "Chicken Pastel": chickenPastelCount,
+    "Nutella Pancake": nutellaPancakeCount,
+    "Nutella Waffel": nutellaWaffelCount,
+    "Oreo Pancake": oreoPancakeCount,
+  };
+
+  const allValuesNull = Object.values(itemList).every(
+    (value) => value === null || value === 0
+  );
+  const anyValueNotPositiveInteger = Object.values(itemList).some(
+    (value) => value !== null && (!Number.isInteger(value) || value <= 0)
+  );
+
+  if (allValuesNull || anyValueNotPositiveInteger) {
+    return interaction.reply({
+      content:
+        "Please select at least one item, and ensure all numbers are positive integers.",
+      ephemeral: true,
+    });
+  }
+
+  const today = new Date();
+  const todayFormatted = today.toLocaleDateString();
+
+  const embed = new EmbedBuilder()
+    .setTitle("Stock Details")
+    .setColor(0xfec5e0)
+    .setAuthor({
+      name: member.nickname,
+      iconURL: member.user.displayAvatarURL(),
+    })
+    .setDescription(`${member.nickname} have prepared the following items.`)
+    .addFields({ name: "Date", value: todayFormatted });
+
+  for (const [itemName, itemCount] of Object.entries(itemList)) {
+    if (itemCount !== null) {
+      embed.addFields({ name: itemName, value: itemCount.toString() });
+    }
+  }
+
+  interaction.reply({ embeds: [embed] });
+};
