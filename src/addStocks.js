@@ -1,4 +1,28 @@
 const { EmbedBuilder } = require("discord.js");
+var admin = require("firebase-admin");
+const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
+
+var serviceAccount = require("./../serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+const db = getFirestore();
+
+async function addSingleRecord(userName, date, items) {
+  const docID = userName + "|" + date;
+  const total = getTotalCount(items);
+  
+  await db.collection('stocks').doc(docID).set({
+    user: userName,
+    time: Timestamp.now(),
+    total: total,
+    ...items
+  });
+
+  await db.collection('users').doc(userName).set({ 'stocksCount': FieldValue.increment(total) }, { merge: true });
+}
 
 module.exports = async function addStocks(interaction) {
   const { options, member, channelId } = interaction;
@@ -60,11 +84,38 @@ module.exports = async function addStocks(interaction) {
     .setDescription(`${member.nickname} have prepared the following items.`)
     .addFields({ name: "Date", value: todayFormatted });
 
+    const dbData = {};
+
   for (const [itemName, itemCount] of Object.entries(itemList)) {
     if (itemCount !== null) {
       embed.addFields({ name: itemName, value: itemCount.toString() });
+      dbData[itemName] = itemCount;
     }
   }
 
+  await addSingleRecord(interaction.user.username, formatDateToCustomFormat(today), dbData);
+
   interaction.reply({ embeds: [embed] });
 };
+
+
+function formatDateToCustomFormat(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function getTotalCount(items) {
+  let totalCount = 0;
+  
+  for (const count of Object.values(items)) {
+    totalCount += count;
+  }
+  
+  return totalCount;
+}
