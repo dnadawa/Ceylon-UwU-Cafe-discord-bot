@@ -15,7 +15,7 @@ module.exports = async function addDutyTime(interaction) {
     const offTime = options.getString("duty-off-time");
 
     // Validate the time format (hh:mm a)
-    const timeRegex = /^(1[0-2]|0?[1-9]):[0-5][0-9]( ?)(am|pm|AM|PM)?$/i;
+    const timeRegex = /^(1[0-2]|0?[1-9]):[0-5][0-9] (am|pm|AM|PM)?$/i;
 
     if (!timeRegex.test(onTime) || !timeRegex.test(offTime)) {
       return interaction.reply({
