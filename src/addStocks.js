@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 var admin = require("firebase-admin");
+const moment = require('moment-timezone');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 
 var serviceAccount = require("./../serviceAccountKey.json");
@@ -93,22 +94,10 @@ module.exports = async function addStocks(interaction) {
     }
   }
 
-  await addSingleRecord(interaction.user.username, formatDateToCustomFormat(today), dbData);
+  await addSingleRecord(interaction.user.username, moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss'), dbData);
 
   interaction.reply({ embeds: [embed] });
 };
-
-
-function formatDateToCustomFormat(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
 
 function getTotalCount(items) {
   let totalCount = 0;

@@ -26,7 +26,7 @@ async function addSingleRecord(userName, date, items, income) {
 
 module.exports = async function addSales(interaction) {
   const { options, member, channelId } = interaction;
-  const allowedChannels = ["1129728839149436974"];
+  const allowedChannels = ["1129728839149436974", "1131565102018089052"];
 
   if (!allowedChannels.includes(channelId)) {
     return interaction.reply({
