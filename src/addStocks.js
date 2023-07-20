@@ -35,6 +35,7 @@ module.exports = async function addStocks(interaction) {
       ephemeral: true,
     });
   }
+  await interaction.deferReply();
 
   const bubbleTeaCount = options.getNumber("bubble-tea");
   const coffeeCount = options.getNumber("coffee");
@@ -96,7 +97,7 @@ module.exports = async function addStocks(interaction) {
 
   await addSingleRecord(interaction.user.username, moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss'), dbData);
 
-  interaction.reply({ embeds: [embed] });
+  await interaction.followUp({ embeds: [embed] });
 };
 
 function getTotalCount(items) {
