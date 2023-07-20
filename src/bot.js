@@ -2,6 +2,7 @@ const { Client, IntentsBitField, EmbedBuilder } = require("discord.js");
 require("dotenv").config();
 const addDutyTime = require("./addDutyTime");
 const addStocks = require("./addStocks");
+const addSales = require("./addSales");
 
 const client = new Client({
   intents: [IntentsBitField.Flags.Guilds],
@@ -23,5 +24,8 @@ client.on("interactionCreate", async (interaction) => {
   }
   if (commandName === "add-stocks") {
     await addStocks(interaction);
+  }
+  if (commandName === "add-sales") {
+    await addSales(interaction);
   }
 });
