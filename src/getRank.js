@@ -117,8 +117,8 @@ const rank = new canvacord.Rank()
     })
     .setImage('attachment://img.png')
     .addFields(
-      {name: "Total Stocks", value: empData['stocksCount'].toString(), inline: true},
-      {name: "Total Income", value: `\$ ${empData['revenue'].toString()}`, inline: true},
+      {name: "Total Stocks", value: (empData['stocksCount'] ?? 0).toString(), inline: true},
+      {name: "Total Income", value: `\$ ${(empData['revenue'] ?? 0).toString()}`, inline: true},
     );
 
     await interaction.followUp({embeds: [embed], files: [attachment]});
