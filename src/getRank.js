@@ -69,7 +69,7 @@ function getRankByUsername(users, username) {
 
 module.exports = async function getRank(interaction) {
     const { options, member, channelId } = interaction;
-    const allowedChannels = ["1129728839149436974"];
+    const allowedChannels = ["1129728839149436974", "1131954748807991488"];
 
   if (!allowedChannels.includes(channelId)) {
     return interaction.reply({
