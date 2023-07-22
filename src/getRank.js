@@ -84,6 +84,11 @@ module.exports = async function getRank(interaction) {
   const daysAsMember = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
   const doc = await db.collection('users').doc(interaction.user.username).get();
+
+  if(!doc.exists){
+    await interaction.followUp({content: "Cannot find record!"});
+  }
+
   const empData = doc.data();
 
   const points = calculatePoints(empData['stocksCount'] ?? 0, empData['salesCount'] ?? 0);
