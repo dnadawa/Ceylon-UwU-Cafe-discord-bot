@@ -127,6 +127,10 @@ const commands = [
       },
     ]
   },
+  {
+    name: "employee-card",
+    description: "Get the employee record card",
+  }
 ];
 
 const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
