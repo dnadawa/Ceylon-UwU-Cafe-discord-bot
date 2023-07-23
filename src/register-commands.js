@@ -130,6 +130,18 @@ const commands = [
   {
     name: "employee-card",
     description: "Get the employee record card",
+  },
+  {
+    name: "employee-card-of",
+    description: "Get the employee record card of a specefic employee",
+    options: [
+      {
+        name: 'employee',
+        description: 'Employee',
+        type: ApplicationCommandOptionType.User,
+        required: true
+      },
+    ]
   }
 ];
 

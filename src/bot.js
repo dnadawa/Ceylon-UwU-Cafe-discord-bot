@@ -30,6 +30,9 @@ client.on("interactionCreate", async (interaction) => {
     await addSales(interaction);
   }
   if (commandName === "employee-card") {
-    await getRank(interaction);
+    await getRank(interaction, false);
+  }
+  if (commandName === "employee-card-of") {
+    await getRank(interaction, true);
   }
 });

@@ -67,8 +67,8 @@ function getRankByUsername(users, username) {
   return rank;
 }
 
-module.exports = async function getRank(interaction) {
-    const { options, member, channelId } = interaction;
+module.exports = async function getRank(interaction, isEmployeeCardOf) {
+    const { options, channelId } = interaction;
     const allowedChannels = ["1129728839149436974", "1131954748807991488"];
 
   if (!allowedChannels.includes(channelId)) {
@@ -77,16 +77,31 @@ module.exports = async function getRank(interaction) {
       ephemeral: true,
     });
   }
+
+  let member = interaction.member;
+
+  if(isEmployeeCardOf){
+    const allowedRoles = ["1129738415634657340", "1129739274108031028", "1129739434489823282"];
+    if(!allowedRoles.some(role => interaction.member._roles.includes(role))){
+      return interaction.reply({
+        content: `Sorry, you don't have the permission to run this command.`,
+        ephemeral: true,
+      });
+    }
+
+    member = options.getMember("employee");
+  }
+
   await interaction.deferReply();
 
   const currentDate = new Date();
-  const timeDifference = currentDate.getTime() - interaction.member.joinedAt.getTime();
+  const timeDifference = currentDate.getTime() - member.joinedAt.getTime();
   const daysAsMember = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
-  const doc = await db.collection('users').doc(interaction.user.username).get();
+  const doc = await db.collection('users').doc(member.user.username).get();
 
   if(!doc.exists){
-    await interaction.followUp({content: "Cannot find record!"});
+    return await interaction.followUp({content: "Cannot find record!"});
   }
 
   const empData = doc.data();
@@ -94,7 +109,7 @@ module.exports = async function getRank(interaction) {
   const points = calculatePoints(empData['stocksCount'] ?? 0, empData['salesCount'] ?? 0);
   const levelDetails = getLevelAndXP(points);
 
-  const roleColor = interaction.member.roles.cache.first().color.toString(16);
+  const roleColor = member.roles.cache.first().color.toString(16);
   const users = await getUserCounts();
   const rankNumber = getRankByUsername(users, member.user.username);
   const rankColor = rankNumber === 1 ? "#FFd700" : rankNumber === 2 ? "#c0c0c0" : rankNumber === 3 ? "#cd7f32" : "#fec5e0";
