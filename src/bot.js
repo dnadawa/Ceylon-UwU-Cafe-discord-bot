@@ -3,7 +3,8 @@ require("dotenv").config();
 const addDutyTime = require("./addDutyTime");
 const addStocks = require("./addStocks");
 const addSales = require("./addSales");
-const getRank = require("./getRank");
+const {getRank} = require("./getRank");
+const getLeaderboard = require("./getLeaderboard");
 
 const client = new Client({
   intents: [IntentsBitField.Flags.Guilds],
@@ -34,5 +35,8 @@ client.on("interactionCreate", async (interaction) => {
   }
   if (commandName === "employee-card-of") {
     await getRank(interaction, true);
+  }
+  if (commandName === "leaderboard") {
+    await getLeaderboard(interaction);
   }
 });

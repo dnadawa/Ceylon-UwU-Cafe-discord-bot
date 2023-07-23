@@ -142,6 +142,10 @@ const commands = [
         required: true
       },
     ]
+  },
+  {
+    name: "leaderboard",
+    description: "Get the Leaderboard",
   }
 ];
 
