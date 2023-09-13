@@ -62,16 +62,17 @@ module.exports = async function getLeaderBoard(interaction) {
       limit: 1,
     });
     const member = members.first();
-
-    const empData = user[1];
-    const { embed, file } = await generateEmbeds(
-      member,
-      empData["stocksCount"],
-      empData["salesCount"],
-      empData["revenue"]
-    );
-    embedList.push(embed);
-    fileList.push(file);
+    if (member !== undefined) {
+      const empData = user[1];
+      const { embed, file } = await generateEmbeds(
+        member,
+        empData["stocksCount"],
+        empData["salesCount"],
+        empData["revenue"]
+      );
+      embedList.push(embed);
+      fileList.push(file);
+    }
   }
 
   await Promise.all(sortedUsers.map(processUser));
